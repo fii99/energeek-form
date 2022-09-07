@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Energeek Form</title>
+
+    <!-- bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+    />
+
+    <!-- Style -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="hold-transition register-page">
+    <div class="register-box">
+      <div class="register-logo text-center mb-4 mt-4">
+        <img src="./images/energeek.png" alt="" width="150px" />
+      </div>
+      <div id="container" class="w-50 m-auto mb-4">
+        <div class="card p-3">
+          <div class="card-body register-card-body">
+            <p class="login-box-msg fw-bold text-center">Apply Lamaran</p>
+
+            <div class="mb-3">
+              <label for="name" class="form-label">Nama</label>
+              <input
+                type="email"
+                class="form-control"
+                id="name"
+                placeholder="Cth. Muhammad Rafii"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="jabatan" class="form-label">Jabatan</label>
+              <select
+                class="form-select w-100"
+                name="state"
+                data-placeholder="Pilih Jabatan"
+                id="jabatan"
+              >
+                <option value=""></option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="telepon" class="form-label">Telepon</label>
+              <input
+                type="number"
+                class="form-control"
+                id="telepon"
+                placeholder="Cth. 085703029641"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                aria-describedby="emailHelp"
+                placeholder="Cth. muhammadrafii399@gmail.com"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="tahun-lahir" class="form-label">Tahun Lahir</label>
+              <input
+                type="date"
+                class="form-control"
+                id="tahun-lahir"
+                aria-describedby="emailHelp"
+                placeholder="Cth. muhammadrafii399@gmail.com"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="skillset">Skill Set</label>
+              <select
+                class="form-select w-100"
+                multiple
+                id="skillset"
+                data-placeholder="Pilih Skills"
+              >
+                <option value=""></option>
+              </select>
+            </div>
+
+            <div class="">
+              <button id="apply" class="btn btn-md btn-danger w-100">
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jquery -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- main script -->
+    <script>
+      var eljabatan = $("#jabatan");
+      var elskillset = $("#skillset");
+
+      $("#apply").click(function () {
+        var name = document.getElementById("name").value;
+        var jabatan = document.getElementById("jabatan").value;
+        var telepon = document.getElementById("telepon").value;
+        var email = document.getElementById("email").value;
+        var tahunLahir = document.getElementById("tahun-lahir").value;
+        var skillSet = $("#skillset").select2("val");
+
+        let request = {
+          name: name,
+          email: email,
+          phone: telepon,
+          birth_year: tahunLahir.split("-")[0],
+          job_id: jabatan,
+          skill_id: skillSet,
+        };
+
+        console.log(request);
+
+        var settings = {
+          url: "http://demo73.energeek.co.id/energeek-frontend-test/public/api/recruitment",
+          method: "POST",
+          timeout: 0,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: JSON.stringify(request),
+        };
+
+        $.ajax(settings)
+          .done((response) => {
+            console.log(response);
+            Swal.fire("Success", response.status.message, "success");
+          })
+          .fail((fail) => {
+            console.log(fail.responseText);
+            Swal.fire("Error", fail.responseJSON.status.message, "error");
+          });
+      });
+
+      $(document).ready(function () {
+        elskillset.select2({
+          theme: "bootstrap-5",
+          width: $(this).data("width")
+            ? $(this).data("width")
+            : $(this).hasClass("w-100")
+            ? "100%"
+            : "style",
+          placeholder: $(this).data("placeholder"),
+          closeOnSelect: false,
+        });
+
+        eljabatan.select2({
+          theme: "bootstrap-5",
+          width: $(this).data("width")
+            ? $(this).data("width")
+            : $(this).hasClass("w-100")
+            ? "100%"
+            : "style",
+          placeholder: $(this).data("placeholder"),
+        });
+
+        $.get(
+          "http://demo73.energeek.co.id/energeek-frontend-test/public/api/select_list/job?search",
+          (data) => {
+            var list = data.data.jobs;
+            for (let i = 0; i < list.length; i++) {
+              eljabatan.append(
+                `<option value=${list[i].id}>${list[i].name}</option>`
+              );
+            }
+          }
+        );
+
+        $.get(
+          "http://demo73.energeek.co.id/energeek-frontend-test/public/api/select_list/skill?search",
+          (data) => {
+            var list = data.data.skills;
+            for (let i = 0; i < list.length; i++) {
+              elskillset.append(
+                `<option value=${list[i].id}>${list[i].name}</option>`
+              );
+            }
+          }
+        );
+      });
+    </script>
+  </body>
+</html>
